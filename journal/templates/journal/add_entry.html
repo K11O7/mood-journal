@@ -1,0 +1,24 @@
+{% extends 'journal/base.html' %}
+{% load form_tags %}
+{% block title %}New Journal Entry{% endblock %}
+
+{% block content %}
+<h2 class="text-2xl font-bold text-gray-800 mb-6">📝 New Journal Entry</h2>
+
+<form method="POST" class="space-y-6  bg-transparent p-6 shadow-md rounded-lg border border-gray-300">
+  {% csrf_token %}
+
+  <!-- Content Field -->
+  <div>
+    <label class="block text-lg font-semibold text-gray-700 mb-2" for="id_content">
+      What's on your mind today?
+    </label>
+    {{ form.content|add_class:"w-full p-4 border border-gray-300 rounded-md text-gray-800 text-base leading-relaxed h-40" }}
+  </div>
+
+  <!-- Submit Button -->
+  <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-full text-lg font-semibold hover:bg-indigo-700 transition">
+    Save Entry
+  </button>
+</form>
+{% endblock %}

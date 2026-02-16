@@ -1,0 +1,56 @@
+{% extends 'journal/base.html' %}
+{% block title %}Your Journal{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center flex-wrap gap-2 mb-6" xmlns="http://www.w3.org/1999/html">
+  <h2 class="text-3xl sm:font-3xl font-dancing text-gray-800 flex items-center">📖 Your Journal Entries</h2>
+  <a href="{% url 'add_entry' %}" class="bg-indigo-600 text-white sm:px-4 whitespace-nowrap px-3 py-2 rounded-full hover:bg-indigo-700 text-sm font-medium">
+    + New Entry
+  </a>
+</div>
+
+{% if entries %}
+  <ul class="space-y-6">
+    {% for entry in entries %}
+      <li class="relative bg-white/20 entry-shadow border-1 border-yellow-400 rounded-xl px-6 py-4 hover:bg-white/30 transition-colors duration-300">
+  <!-- Date + Mood + Actions -->
+  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-1">
+    <div class="flex gap-3 items-center text-gray-600 text-sm">
+      📅 {{ entry.created_at|date:"d M, Y" }} 🕒 {{ entry.created_at|time:"H:i" }}
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2 text-sm">
+      <span class="
+              {% if entry.mood == 'happy' %}bg-yellow-400 text-yellow-900
+              {% elif entry.mood == 'calm' %}bg-blue-200 text-blue-900
+              {% elif entry.mood == 'neutral' %}bg-gray-300 text-gray-800
+              {% elif entry.mood == 'sad' %}bg-blue-500 text-blue-50
+              {% elif entry.mood == 'excited' %}bg-orange-500 text-orange-100
+              {% elif entry.mood == 'anxious' %}bg-purple-500 text-purple-100
+              {% elif entry.mood == 'angry' %}bg-red-500 text-red-100
+              {% elif entry.mood == 'frustrated' %}bg-red-400 text-white
+              {% elif entry.mood == 'tired' %}bg-gray-300 text-gray-800
+              {% elif entry.mood == 'stressed' %}bg-gray-300 text-gray-800
+              {% elif entry.mood == 'confused' %}bg-gray-300 text-gray-800
+              {% else %}bg-gray-100 text-gray-700{% endif %}
+              rounded-full px-3 py-[3px] font-medium shadow-sm sm:ml-auto text-center
+            ">
+        {{ entry.get_mood_display }}
+      </span>
+      <a href="{% url 'edit_entry' entry.id %}" class="px-2 py-[3px] font-medium rounded-full bg-indigo-600 text-indigo-100 hover:bg-blue-500 transition">✏️ Edit</a>
+        {% csrf_token %}
+        <button type="button" class="delete-btn px-2 py-[3px] font-medium rounded-full bg-red-600 text-red-100 hover:bg-red-500 transition" data-delete-url="{% url 'delete_entry' entry.id %}">🗑️ Delete</button>
+    </div>
+  </div>
+
+  <!-- Journal Content -->
+<div class="font-dancing text-gray-900 text-[1.30rem] leading-relaxed whitespace-pre-line tracking-wide z-10 relative px-4 py-2 border-l-[1px] border-yellow-300 pl-5">
+    {{ entry.content }}
+  </div>
+</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="text-gray-500 text-center mt-10">No entries yet. <a href="{% url 'add_entry' %}" class="underline text-indigo-600">Add one</a>!</p>
+{% endif %}
+{% endblock %}

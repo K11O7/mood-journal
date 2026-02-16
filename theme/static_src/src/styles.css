@@ -1,0 +1,36 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/**
+  * A catch-all path to Django template files, JavaScript, and Python files
+  * that contain Tailwind CSS classes and will be scanned by Tailwind to generate the final CSS file.
+  *
+  * If your final CSS file is not being updated after code changes, you may want to broaden or narrow
+  * the scope of this path.
+  */
+@source "../../../**/*.{html,py,js}";
+.font-dancing {
+  font-family: "Dancing Script", cursive;
+}
+
+/* Cozy Journal Page Background */
+.page-bg {
+  background: #faf6f1;
+  background-size: cover;
+}
+
+/* Faint ruled lines like a journal page */
+.page-lines {
+  background-image:
+    repeating-linear-gradient(to bottom, rgba(125, 80, 40, 0.13), transparent 1px, transparent 23px),
+    url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+  background-size: auto, 300px;
+}
+
+/* Slight shadow for entry cards */
+.entry-shadow {
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.03), 0 2px 5px rgba(0, 0, 0, 0.05);
+}

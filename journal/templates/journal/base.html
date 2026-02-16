@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+{% load tailwind_tags %}
+{% load form_tags %}
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Mood Journal{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light only">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    {% tailwind_css %}
+    <style>
+    ::selection {
+        background-color: #fde68a; /* light yellow */
+        color: #1f2937; /* gray-800 */
+    }
+    </style>
+
+  </head>
+  <body class="min-h-screen page-bg page-lines text-gray-900 font-sans">
+    <nav class="bg-white-100/50 shadow-md px-4 py-3 flex justify-between items-center backdrop-blur">
+      <h1 class="text-2xl font-dancing text-indigo-600">📝 Mood Journal</h1>
+      <div class="flex space-x-4">
+        {% if user.is_authenticated %}
+            <span class="text-gray-700">Hi, <strong>{{ user.username }}</strong></span>
+            <a href="{% url 'logout' %}" class="text-red-600 font-dancing text-xl hover:underline">Logout</a>
+        {% else %}
+            {% if request.resolver_match.url_name != 'login' %}
+                <a href="{% url 'login' %}" class="text-blue-600 font-dancing text-xl hover:underline">Login</a>
+            {% endif %}
+            {% if request.resolver_match.url_name != 'signup' %}
+                <a href="{% url 'signup' %}" class="text-green-600 font-dancing text-xl hover:underline">Sign Up</a>
+            {% endif %}
+        {% endif %}
+</div>
+
+    </nav>
+
+    <div class="flex-grow max-w-3xl mx-auto px-4 py-6 bg-white-100/80">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="mb-4 p-3 rounded-lg text-white bg-{{ message.tags }}-600">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% block content %}{% endblock %}
+    </div>
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".delete-btn").forEach(btn => {
+    btn.addEventListener("click", function() {
+      if (!confirm("Delete this entry?")) return;
+
+      const url = this.dataset.deleteUrl;
+      const entryEl = this.closest("li");
+
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": getCSRFToken(),
+          "X-Requested-With": "XMLHttpRequest"
+        }
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to delete");
+        return res.json();
+      })
+      .then(data => {
+        if (data.success) {
+          // Get current height to set fixed value before collapsing
+          const entryHeight = entryEl.offsetHeight + "px";
+          entryEl.style.height = entryHeight;
+          entryEl.style.transition = "opacity 300ms ease, height 300ms ease, margin 300ms ease, padding 300ms ease";
+          entryEl.style.overflow = "hidden";
+
+          // Start fade immediately
+          entryEl.style.opacity = "0";
+
+          // Start collapse slightly later
+          setTimeout(() => {
+            entryEl.style.height = "0";
+            entryEl.style.margin = "0";
+            entryEl.style.padding = "0";
+          }, 250);
+
+          // Remove from DOM after animation finishes
+          setTimeout(() => entryEl.remove(), 550);
+        }
+
+      })
+      .catch(err => console.error(err));
+    });
+  });
+
+  function getCSRFToken() {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let cookie of cookies) {
+        cookie = cookie.trim();
+        if (cookie.startsWith('csrftoken=')) {
+          cookieValue = decodeURIComponent(cookie.substring('csrftoken='.length));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+});
+
+</script>
+
+  </body>
+</html>

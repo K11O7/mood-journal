@@ -1,0 +1,35 @@
+{% extends "journal/base.html" %}
+{% load form_tags %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-center min-h-[70vh]">
+  <div class="bg-white/50 border-2 backdrop-blur-sm border-yellow-400 rounded-xl shadow-md px-6 py-8 w-full max-w-md entry-shadow">
+    <h2 class="text-4xl font-dancing text-center text-indigo-700 mb-6">Login to Your Journal</h2>
+
+    <form method="post" class="space-y-5">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <div>
+        <label class="block font-dancing text-xl text-gray-700 mb-1">Username</label>
+        {{ form.username|add_class:"w-full px-4 py-2 border border-yellow-400 rounded-lg bg-[#fffefc] focus:outline-none focus:ring-2 focus:ring-yellow-400 focus: border-yellow-500" }}
+      </div>
+
+      <div>
+        <label class="block font-dancing text-xl text-gray-700 mb-1">Password</label>
+        {{ form.password|add_class:"w-full px-4 py-2 border border-yellow-400 rounded-lg bg-[#fffefc] focus:outline-none focus:ring-2 focus:ring-yellow-400 focus: border-yellow-500" }}
+      </div>
+
+      <button type="submit" class="w-full bg-indigo-600 font-medium text-xl text-white py-2 rounded-full hover:bg-indigo-700 transition">
+        Login
+      </button>
+    </form>
+
+    <p class="text-center text-sm text-gray-600 mt-6">
+      Don’t have an account?
+      <a href="{% url 'signup' %}" class="text-green-600 hover:underline font-medium">Sign Up</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
